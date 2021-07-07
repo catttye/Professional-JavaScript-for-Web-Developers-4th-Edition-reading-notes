@@ -22,13 +22,13 @@ ECMAScript不局限于Web浏览器，Web浏览器只是ECMAScript实现可能存
 
 在基本层面上，ECMA-262描述了ECMAScript语言的如下部分：
 
-- 语法
-- 类型
-- 语句
-- 关键字
-- 保留字
-- 操作符
-- 全局对象  
+- 语法 Syntax
+- 类型 Types
+- 语句 Statements
+- 关键字 Keywords
+- 保留字 Reserved words
+- 操作符 Operators
+- 全局对象 Global objects
 
 ECMAScript只是对实现这个规范描述的所有方面的一门语言的称呼。JavaScript实现了ECMAScript，Adobe ActionScript也实现了。 
 
@@ -46,7 +46,7 @@ ECMA-262第6版，俗称ES6、ES2015或ES Harmony，于2015年6月发布。这�
 
 ECMA-262第7版，也称为ES7或ES2016，于2016年6月发布。这次修订只包含少量语法层面的增强，如Array.prototype.includes和指数操作符。  
 
-ECMA-262第8版，也称为ES8或ES2017，完成于2017月6月。这一版主要增加了异步函数(async/awit)、SharedArrayBuffer及Atomics API，以及Object.values()/Object.entries()/Object.getOwnPropertyDescriptors()和字符串填充方法，另外明确支持对象字面量最后的逗号。  
+ECMA-262第8版，也称为ES8或ES2017，完成于2017月6月。这一版主要增加了异步函数(async/await)、SharedArrayBuffer及Atomics API，以及Object.values()/Object.entries()/Object.getOwnPropertyDescriptors()和字符串填充方法，另外明确支持对象字面量最后的逗号。  
 
 ECMA-262第9版，也称为ES8或ES2018，发布于2018年6月。这次修订包括异步迭代、剩余和扩展属性、一组新的正则表达式特性、Promise.prototype.finally()，以及模板字面量修订。
 
@@ -56,7 +56,22 @@ ECMA-262第10版，也称为ES8或ES2019，发布于2019年6月。这次修订�
 
 ### 1.2.2 DOM
 
-__文档对象模型__(DOM, Document Object Model)是一个应用编程接口(API)，用于在HTML中使用扩展的XML。DOM将整个页面抽象为一组分层节点。HTML或XML页面的每个组成部分都是一种节点，包含不同的数据。  
+__文档对象模型__(DOM, Document Object Model)是一个应用编程接口(API)，用于在HTML中使用扩展的XML。DOM将整个页面抽象为一组分层节点。HTML或XML页面的每个组成部分都是一种节点，包含不同的数据。比如下面的 HTML 页面:
+```html
+<script>
+ <html>
+        <head>
+            <title>Sample Page</title>
+        </head>
+        <body>
+            <p> Hello World!</p>
+        </body>
+</html>
+```
+这些代码通过 DOM 可以表示为一组分层节点，如下图所示：
+
+<img src="/Users/ting/Library/Application Support/typora-user-images/Screen Shot 2021-07-07 at 11.19.37 pm.png" alt="Screen Shot 2021-07-07 at 11.19.37 pm" style="zoom:67%;" />
+
 
 DOM通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用DOM API，可以轻松地删除、添加、替换、修改节点。  
 
@@ -70,9 +85,8 @@ DOM Level2的新增了以下模块，以支持新的接口。
 - DOM事件：描述事件及事件处理的接口。
 - DOM样式：描述处理元素CSS样式的接口。
 - DOM遍历和范围：描述遍历和操作DOM树的接口。  
-  
 
-DOM Level3进一步扩展了DOM，增加了以统一的方式加载和保存文档的方法，还有验证文档的方法(DOM Validation)。在Level3中，DOM Core经过扩展支持了所以XML1.0的特性。  
+DOM Level3进一步扩展了DOM，增加了以统一的方式加载和保存文档的方法（DOM Load and Saves），还有验证文档的方法(DOM Validation)。在Level3中，DOM Core经过扩展支持了所以XML1.0的特性。  
 
 除了DOM Core和DOM HTML接口，有些其他语言也发布了自己的DOM标准。下面列出的语言是基于XML的，每一种都增加了该语言独有的DOM方法和接口：
 
@@ -84,7 +98,7 @@ DOM Level3进一步扩展了DOM，增加了以统一的方式加载和保存文�
 
 ### 1.2.3 BOM 
 
-__浏览器对象模型__(BOM)API用于支持访问和操作浏览器的窗口。总的来说，BOM主要针对浏览器窗口和子窗口(frame)，不过人们通常会把任何特定于浏览器的扩展都归在BOM的范畴内。比如，下面就是这样一些扩展：
+__浏览器对象模型__(BOM, The Document Object Model)API用于支持访问和操作浏览器的窗口。总的来说，BOM主要针对浏览器窗口和子窗口(frame)，不过人们通常会把任何特定于浏览器的扩展都归在BOM的范畴内。比如，下面就是这样一些扩展：
 
 - 弹出新浏览器窗口的能力。
 - 移动、缩放和关闭浏览器窗口的能力。
@@ -95,5 +109,12 @@ __浏览器对象模型__(BOM)API用于支持访问和操作浏览器的窗口�
 - 对cookie的支持。
 - 其他自定义对象，如XMLHttpRequest和IE的ActiveXObject。
 
+## 1.3 小结
 
+JavaScript 是一门用来与网页交互的脚本语言，包含以下三个组成部分。
 
+* ECMAScript:由 ECMA-262 定义并提供核心功能。
+* 文档对象模型(DOM):提供与网页内容交互的方法和接口。
+* 浏览器对象模型(BOM):提供与浏览器交互的方法和接口。
+
+JavaScript 的这三个部分得到了五大 Web 浏览器(IE、Firefox、Chrome、Safari 和 Opera)不同程度的支持。所有浏览器基本上对 ES5(ECMAScript 5)提供了完善的支持，而对 ES6(ECMAScript 6)和 ES7(ECMAScript 7)的支持度也在不断提升。这些浏览器对 DOM 的支持各不相同，但对 Level 3 的支 持日益趋于规范。HTML5 中收录的 BOM 会因浏览器而异，不过开发者仍然可以假定存在很大一部分 公共特性。
