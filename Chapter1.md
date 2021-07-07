@@ -68,6 +68,7 @@ __文档对象模型__(DOM, Document Object Model)是一个应用编程接口(AP
 </html>
 ```
 这些代码通过 DOM 可以表示为一组分层节点，如下图所示：
+
 <img width="292" alt="Screen Shot 2021-07-07 at 11 49 11 pm" src="https://user-images.githubusercontent.com/53255735/124790842-19ffcd00-df7e-11eb-8c59-c36755205ae9.png">
 
 DOM通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用DOM API，可以轻松地删除、添加、替换、修改节点。  
