@@ -58,20 +58,17 @@ ECMA-262第10版，也称为ES8或ES2019，发布于2019年6月。这次修订�
 
 __文档对象模型__(DOM, Document Object Model)是一个应用编程接口(API)，用于在HTML中使用扩展的XML。DOM将整个页面抽象为一组分层节点。HTML或XML页面的每个组成部分都是一种节点，包含不同的数据。比如下面的 HTML 页面:
 ```html
-<script>
- <html>
-        <head>
+<html>
+      <head>
             <title>Sample Page</title>
-        </head>
-        <body>
+      </head>
+      <body>
             <p> Hello World!</p>
-        </body>
+      </body>
 </html>
 ```
 这些代码通过 DOM 可以表示为一组分层节点，如下图所示：
-
-<img src="/Users/ting/Library/Application Support/typora-user-images/Screen Shot 2021-07-07 at 11.19.37 pm.png" alt="Screen Shot 2021-07-07 at 11.19.37 pm" style="zoom:67%;" />
-
+<img width="292" alt="Screen Shot 2021-07-07 at 11 49 11 pm" src="https://user-images.githubusercontent.com/53255735/124790842-19ffcd00-df7e-11eb-8c59-c36755205ae9.png">
 
 DOM通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用DOM API，可以轻松地删除、添加、替换、修改节点。  
 
