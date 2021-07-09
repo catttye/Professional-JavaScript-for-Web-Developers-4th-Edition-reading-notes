@@ -8,7 +8,7 @@
 
 - async: 可选。表示应该立即开始下载脚本，但不阻止其他页面动作。只对外部脚本文件有效。
 - charset: 可选。使用src属性指定的代码字符集。很少用，因为大部分浏览器不在乎它的值。
-- crossorigin: 可选。配置相关请求的CORS(跨域资源共享)设置。
+- crossorigin: 可选。配置相关请求的CORS(跨域资源共享)设置。crossorigin= "anonymous"配置文件请求不必设置凭据标志(credentials flag set)。crossorigin="use-credentials"设置凭据 标志，意味着出站请求会包含凭据。
 - defer: 可选。 表示在文档解析和显示完成后再执行脚本是没有问题的。只对外部脚本文件有效。
 - integrity: 可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性(SRI, Subresource Intergrity)。
 - language: 废弃。
@@ -89,6 +89,25 @@ HTML5为\<script\>元素定义了async属性。从改变脚本处理方式上看
 
 
 
+### 2.1.4 动态加载脚本
+
+使用DOM API，动态创建script标签。通过这种形式创建的默认是异步加载的，相当于添加了async属性，如果不想拥有这样的默认特性，可以强制设置为同步加载。
+
+```javascript
+let script = document.createElement('script');
+script.src = 'gibberish.js';
+script.async = false;
+document.head.appendChild(script);
+```
+
+通过这种形式加载的js文件，浏览器是不可见的，可以使用预加载进行优化。
+
+```javascript
+<link rel="subresource" href="gibberish.js">
+```
+
+
+
 ## 2.2 行内代码与外部文件
 
 虽然可以直接在HTML文件中嵌入JavaScript代码，但通常认为最佳实践是尽可能将JavaScript代码放在外部文件中。理由如下：
@@ -110,7 +129,7 @@ IE初次支持文档模式切换以后，其他浏览器也跟着实现了。随
 
 ## 2.4 \<noscript\>元素
 
-针对早期浏览器不支持Javascript的问题，需要一个页面优雅降级的处理方案。\<noscript\>出现，被用于给不支持JavaScript的浏览器提供替代内容。
+针对早期浏览器不支持Javascript的问题，需要一个页面优雅降级的处理方案。\<noscript\>出现，被用于给不支持JavaScript的浏览器提供替代内容（Safari浏览器可以关闭js代码的执行）。
 
 \<noscript\>可以包含任何可以出现在\<body\>中的HTML元素，\<script\>除外。
 
@@ -122,6 +141,17 @@ IE初次支持文档模式切换以后，其他浏览器也跟着实现了。随
 任何一个条件满足，包含在\<noscript\>中的内容就会被渲染。否则就不会元素中的任何内容。
 
 
+
+## 2.5 小结
+
+JavaScript 是通过<script>元素插入到 HTML 页面中的。这个元素可用于把 JavaScript 代码嵌入到 HTML 页面中，跟其他标记混合在一起，也可用于引入保存在外部文件中的 JavaScript。本章的重点可 以总结如下。
+
+- 要包含外部 JavaScript 文件，必须将 src 属性设置为要包含文件的 URL。文件可以跟网页在同 一台服务器上，也可以位于完全不同的域。
+- 所有<script>元素会依照它们在网页中出现的次序被解释。在不使用 defer 和 async 属性的 情况下，包含在<script>元素中的代码必须严格按次序解释。
+- 对不推迟执行的脚本，浏览器必须解释完位于<script>元素中的代码，然后才能继续渲染页面 的剩余部分。为此，通常应该把<script>元素放到页面末尾，介于主内容之后及</body>标签 之前。
+- 可以使用 defer 属性把脚本推迟到文档渲染完毕后再执行。推迟的脚本原则上按照它们被列出 的次序执行。
+- 可以使用 async 属性表示脚本不需要等待其他脚本，同时也不阻塞文档渲染，即异步加载。异 步脚本不能保证按照它们在页面中出现的次序执行。
+- 通过使用<noscript>元素，可以指定在浏览器不支持脚本时显示的内容。如果浏览器支持并启 用脚本，则<noscript>元素中的任何内容都不会被渲染。
 
 
 
