@@ -44,7 +44,7 @@ ES5增加了严格模式(strict mode)的概念。**严格模式是一种不同�
 ----------------------------------------
 function doSomething(){
     "use strict"   // 局部严格模式
-    
+    // 函数体
 }
 ```
 
@@ -59,7 +59,7 @@ let sum = a + b  // 没有分号也有效
 let diff = a - b;  // 加分号有效
 ```
 
-
+加分号也有助于在某些情况下提升性能，因为解析器会尝试在合适的位置补上分号以纠正语法错误。
 
 ## 3.2 关键字与保留字
 
@@ -89,7 +89,7 @@ var message = "hi"      // 定义并赋值，这个变量可以改变保存的�
 message = 100
 ```
 
-#### 1.var声明作用域
+#### 1.var声明作用域Declaration Scope
 
 使用var操作符定义的变量会成为包含它的函数的局部变量。
 
@@ -113,7 +113,7 @@ console.log(message) // "hi"
 
 不建议这样写
 
-#### 2.var声明提升
+#### 2.var声明提升Declaration Hoisting
 
 使用var时，下面代码不会报错。这是因为使用这个关键字声明的变量会自动提升到函数作用域顶部：
 
@@ -154,7 +154,7 @@ foo() // 36
 
 ### 3.3.2 let声明
 
-let 跟 var的作用差不多，但有重要的区别。最明显的区别是，**let声明的范围是块作用域，而var声明的范围是函数作用域**。
+let 跟 var的作用差不多，但有重要的区别。最明显的区别是，**let声明的范围是块作用域(block scoped)，而var声明的范围是函数作用域(function scoped)**。
 
 ```js
 if(true){
@@ -210,11 +210,25 @@ for(var i = 0; i < 5; i ++){
 console.log(i)  // ReferenceError: i 没有定义
 ```
 
+```js
+// 所有的 i都是同一个变量，因而输出的都是同一个最终值
+for (var i = 0; i < 5; ++i) {
+    // 5, 5, 5, 5, 5
+    setTimeout(() => console.log(i), 0)
+}
+
+// 使用let声明迭代变量时，JavaScript 引擎在后台会为每个迭代循环声明一个新的迭代变量。 每个 setTimeout 引用的都是不同的变量实例
+for (let i = 0; i < 5; ++i) {
+    // 0, 1, 2, 3, 4
+    setTimeout(() => console.log(i), 0)
+}
+```
+
 
 
 ### 3.3.3 const声明
 
-const 的行为与let基本相同，唯一一个重要的区别是用它声明变量时必须同时初始化变量，且尝试修改const声明的变量会导致运行时错误。
+const 的行为与let基本相同，唯一一个重要的区别是用它声明变量时必须同时初始化变量，且尝试修改const声明的变量会导致运行时错误。同样不允许重复声明，也存在暂存性死区。const作用域范围也是块。
 
 ```js
 const age = 26
@@ -226,6 +240,18 @@ const 声明的限制只适用于它指向的变量的引用。换句话说，�
 ```js
 const person = {}
 person.name = 'Matt' // ok
+```
+
+const不能用于for循环，因为会存在变量的自增。
+
+```js
+// error
+for (const i = 0; i < 10; ++i) {}
+
+// ok
+for (const j = 7; i < 5; ++i) {
+    console.log(j);
+}
 ```
 
 
@@ -284,20 +310,29 @@ typeof null会返回“object”。这是因为特殊值null被认为是一个�
 
 ### 3.4.2 Undefind 类型
 
-Undefind类型只有一个值，就是特殊值undefined。当使用var或let声明了变量但没有初始化时，相当于给变量赋予了undefind值。
+Undefind类型只有一个值，就是特殊值undefined。当使用var或let声明了变量但没有初始化时，相当于给变量赋予了undefind值(undefined是一个假值)。注意等于undefined的变量，和未声明变量的区别。
 
 ```js
-let message
-console.log(message == undefind) // true
+let message; // 这个变量被声明了，只是值为undefined
+// 确保没有声明过这个变量 
+// let age
+console.log(message); // "undefined" 
+console.log(age); // 报错
 ```
 
-undefind是一个假值
+使用typeof时，undefined会返回undefined，未声明变量同样会返回undefined。
+
+```js
+let name;
+console.log(typeof name); // undefined 
+console.log(typeof age); // undefined
+```
 
 
 
 ### 3.4.3 Null 类型
 
-Null类型同样只有一个值，即特殊值null。逻辑上讲，null值表示一个空对象指针。
+Null类型同样只有一个值，即特殊值null。逻辑上讲，null值表示一个空对象指针。所以typeof null会返回"object"。
 
 在定义将来要保存对象值的变量时，建议使用null来初始化，不要使用其他值。
 
@@ -307,13 +342,7 @@ if(car != null){
 }
 ```
 
-undefind值是有null值派生而来的，他们表面上相等
-
-```js
-console.log(null == undefind)
-```
-
-null同样是一个假值
+undefined值是由null值派生而来的，所以`null == undefined`返回true。null同样是一个假值
 
 
 
@@ -383,13 +412,25 @@ let floatNum1 = 1.   // 小数点后面没有数字，当成整数1处理
 let floatNum2 = 10.0 // 小数点后面是零，当成整数10处理
 ```
 
-浮点值的精确度最高可达17位小数，但在算数计算中远不如整数精确。例如0.1加0.2的值不是3而是0.30000000000000004。
+科学技术法
 
-**永远不要测试某个特定的浮点值**
+```js
+// 等于31250000, 3.125 作为系数，乘以 10 的 7 次幂
+let num1 = 3.125e7; 
+// 等于0.000 000 3 
+let num2 = 3e-7;
+```
+
+浮点值的精确度最高可达17位小数，但在算数计算中远不如整数精确。例如0.1加0.2的值不是3而是0.30000000000000004。**永远不要测试某个特定的浮点值**
+
+##### 如何避免这种精度问题？
+
+可以将浮点数变为整数后，计算。然后再转换为浮点数。
 
 #### 2.值的范围
 
-ECMAScript可以表示的最小数值保存在**Number.MIN_VALUE**中。最大数值保存在**Number.MAX_VALUE**中。
+* Number.MIN_VALUE 最小数值
+* Number.MAX_VALUE 最大数值
 
 如果超出了范围，数值会被自动转换为Infinity/-Infinity（无穷）值。
 
@@ -399,7 +440,12 @@ ECMAScript可以表示的最小数值保存在**Number.MIN_VALUE**中。最大�
 
 #### 3.NaN
 
-有一个特殊的值叫NaN，意思是“不是数值”（Not a Number），用于表示本来要返回数值的操作失败了。
+“不是数值”（Not a Number），用于表示本来要返回数值的操作失败了(而不是抛出错误)。
+
+```js
+console.log(0/0); // NaN
+console.log(-0/+0); // NaN
+```
 
 NaN有几个独特的属性，首先，任何涉及NaN的操作始终返回NaN。
 
@@ -430,7 +476,7 @@ Number()函数基于如下规则执行转换。
 - null，返回0
 - undefind，返回NaN
 - 字符串，应用如下规则
-- - 如果字符串包含数值字符，包括数值字符前面带加减号的情况，则转换为一个十进制数值。
+  - 如果字符串包含数值字符，包括数值字符前面带加减号的情况，则转换为一个十进制数值。
   - 如果字符串包含有效的浮点值格式如“1.1”，则会转换为相应的浮点值（同样，忽略前面的零）。
   - 如果字符串包含有效的十六进制格式如“0xf”,则会转换为与该十六进制值对应的十进制整数值。
   - 如果是空字符串（不包含字符），则返回0。
@@ -551,13 +597,17 @@ console.log(num.toString(10))   // "10"
 console.log(num.toString(16))   // "a"
 ```
 
-#### 4. 模板字面量
+##### String()
+
+调用String()方法，会首先尝试调用对象的toString方法，如果对象没有toString方法。比如null、返回'null', undefined返回'undefined'。
+
+#### 4. 模板字面量Template Literals
 
 模板字面量可以跨行定义字符串：
 
 ```js
 let myNultiLineTemplateLiteral = `fisrt line
-second line`
+																	second line`;
 console.log(myNultiLineTemplateLiteral)
 // first line
 // second line
@@ -590,7 +640,7 @@ console.log(secondTemplateLiteral[0] === '\n')  // true
 
 
 
-#### 5. 字符串插值
+#### 5. 字符串插值Interpolation
 
 模板字面量最常用的一个特性是支持字符串插值，也就是可以在一个连续定义中插入一个或多个值。
 
@@ -614,19 +664,19 @@ console.log(interpolatedTemplateLiteral) // 5 to the second power is 25
 通过一个例子来理解：
 
 ```js
-let a = 6
-let b = 9
+let a = 6;
+let b = 9;
 
 function simpleTag(strings, aValExpression, bValExpression, sumExpression){
-    console.log(strings)
-    console.log(aValExpression)
-    console.log(bValExpression)
-    console.log(sumExpression)
-    return 'foobar'
+    console.log(strings);
+    console.log(aValExpression);
+    console.log(bValExpression);
+    console.log(sumExpression);
+    return 'foobar';
 }
 
-let untaggedResult = `${ a } + ${ b } = ${ a + b }`
-let taggedRsult = simpleTag`${ a } + ${ b } = ${ a + b }`
+let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
+let taggedRsult = simpleTag`${ a } + ${ b } = ${ a + b }`;
 // ["", " + ", " = ", ""]
 // 6
 // 9
@@ -636,7 +686,7 @@ console.log(untaggedResult) // "6 + 9 = 15"
 console.log(taggedRsult)    // "foobar"
 ```
 
-#### 7. 原始字符串
+#### 7. 原始字符串Raw Strings
 
 使用模板字面量也可直接获取原始的模板字面量内容（如换行符或Unicode字符），而不是被转换后的字符表示。
 
@@ -675,7 +725,9 @@ printRaw`\u00A9${'and'}\n`
 
 ### 3.4.7 Symbol类型
 
-**符号（Symbol）是原始值，且符号实例是唯一、不可变的。**符号的用途是确保对象属性使用唯一标识符，不会发生属性冲突的危险。
+**符号（Symbol ES6新增）是原始值，且符号实例是唯一、不可变的。**符号的用途是确保对象属性使用唯一标识符，不会发生属性冲突的危险。
+
+https://zhuanlan.zhihu.com/p/22652486 关于对symbol的简单理解
 
 #### 1. 符号的基本用法
 
@@ -706,7 +758,7 @@ console.log(fooSymbol == otherFooSymbol)  // false
 
 如果运行时的不同部分需要共享和重用符号实例，那么可以用一个字符串作为键，在全局符号注册表中创建并重用符号。
 
-为此，需要使用Symbol.for()方法。**这个方法对每个字符串键都执行幂等操作**。第一次使用某个字符串调用时，它会检查全局运行时注册表，发现不存在对应的符号，于是会生成一个新的符号实例并添加至注册表中。后续使用相同字符串的调用会同样检查注册表，发现存在与该字符串对应的符号，就会返回该符号实例。
+为此，需要使用Symbol.for()方法。**这个方法对每个字符串键都执行幂等操作（其任意多次执行所产生的影响均与一次执行的影响相同。）**。第一次使用某个字符串调用时，它会检查全局运行时注册表，发现不存在对应的符号，于是会生成一个新的符号实例并添加至注册表中。后续使用相同字符串的调用会同样检查注册表，发现存在与该字符串对应的符号，就会返回该符号实例。
 
 ```js
 let fooGlobalSymbol = Symbol.for('foo')
