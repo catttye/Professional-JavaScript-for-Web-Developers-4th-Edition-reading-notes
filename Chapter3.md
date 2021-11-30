@@ -8,7 +8,7 @@ ECMAScript中一切区分大小写。
 
 
 
-### 3.1.2 标识符
+### 3.1.2 标识符Identifiers
 
 标识符就是变量、函数、属性或函数参数的名称。标识符可以由一或多个下列字符组成：
 
@@ -132,7 +132,12 @@ function foo(){
     var age
     console.log(age)
     age = 26
+}function foo(){
+    var age
+    console.log(age)
+    age = 26
 }
+foo() // undefined
 foo() // undefined
 ```
 
@@ -179,7 +184,7 @@ let age
 let age // SyntaxError: 标识符age已经声明过了
 ```
 
-#### 暂时性死区
+#### 1. 暂时性死区
 
 let 与 var的另一个重要的区别，就是let声明的变量不会在作用域中被提升。
 
@@ -190,7 +195,11 @@ let age = 26
 
 在let声明之前的执行瞬间被称为“暂时性死区”(temporal dead zone), 在此阶段引用任何后面才声明的变量都会抛出ReferenceError。
 
-#### for循环中的let声明
+#### 2. 全局声明
+
+`let` 在全局作用域中声明的变量不会成为`window.`中的对象
+
+#### 3. for循环中的let声明
 
 在let出现之前，for循环定义的迭代变量会渗透到循环体外部(var是函数作用域)
 
@@ -249,6 +258,7 @@ const不能用于for循环，因为会存在变量的自增。
 for (const i = 0; i < 10; ++i) {}
 
 // ok
+let i = 0;
 for (const j = 7; i < 5; ++i) {
     console.log(j);
 }
@@ -519,7 +529,7 @@ let num2 = parseInt("AF")      // NaN
 
 
 
-parseFloat()函数的工作方式与parseInt()类似。但是当parseInt()遇到第二个小数点时，剩余字符都会被忽略，因此，“22.34.5”将被转换为22.34
+parseFloat()函数的工作方式与parseInt()类似。但是当parseFloat()遇到第二个小数点时，剩余字符都会被忽略，因此，“22.34.5”将被转换为22.34
 
 **parseFloat()始终忽略字符串开头的零**。
 
@@ -572,6 +582,11 @@ let wrong = 'error"   // 这是错误的，必须以同种引号作为字符串�
 #### 2. 字符串的特点
 
 ECMAScript中的字符串是不可变的（immutable），意思是一旦创建，它们的值就不能变了。要修改某个变量中的字符串值，必须先销毁原始的字符串，然后将包含新值的另一个字符串保存到该变量。
+
+```js
+let lang = "Java";
+lang = lang + "Script";
+```
 
 #### 3. 转换为字符串
 
@@ -686,6 +701,8 @@ console.log(untaggedResult) // "6 + 9 = 15"
 console.log(taggedRsult)    // "foobar"
 ```
 
+更多：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Template_literals
+
 #### 7. 原始字符串Raw Strings
 
 使用模板字面量也可直接获取原始的模板字面量内容（如换行符或Unicode字符），而不是被转换后的字符表示。
@@ -761,8 +778,8 @@ console.log(fooSymbol == otherFooSymbol)  // false
 为此，需要使用Symbol.for()方法。**这个方法对每个字符串键都执行幂等操作（其任意多次执行所产生的影响均与一次执行的影响相同。）**。第一次使用某个字符串调用时，它会检查全局运行时注册表，发现不存在对应的符号，于是会生成一个新的符号实例并添加至注册表中。后续使用相同字符串的调用会同样检查注册表，发现存在与该字符串对应的符号，就会返回该符号实例。
 
 ```js
-let fooGlobalSymbol = Symbol.for('foo')
-let otherFooGlobalSymbol = Symbol.for('foo')
+let fooGlobalSymbol = Symbol.for('foo')					//创建新符号
+let otherFooGlobalSymbol = Symbol.for('foo')		//重用已有符号
 
 console.log(fooGlobalSymbol == otherFooGlobalSymbol)  // true
 ```
@@ -1115,7 +1132,68 @@ NaN == NaN       // false， NaN不和任何值相等
 
 ## 3.6 语句 
 
-略
+### 3.6.1 if 语句
+
+语法：
+
+```js
+if (condition) statement1 else statement2
+if (condition1) statement1 else if (condition2) statement2 else statement3
+```
+
+条件(condition)可以是任何表达式，并且求值结果不一定是布尔值。ECMAScript 会自 动调用 Boolean()函数将这个表达式的值转换为布尔值。
+
+```js
+if (i > 25)
+ console.log("Greater than 25."); // one–line statement
+else {
+ console.log("Less than or equal to 25."); // block statement一个语句块
+}
+```
+
+### 3.6.2 do-while 语句
+
+do-while 语句是一种后测试循环语句，即循环体中的代码执行后才会对退出条件进行求值。换句话说，循环体内的代码至少执行一次。语法：
+
+```js
+do {statement} while (expression);
+let i = 0; do {
+      i += 2;
+    } while (i < 10);
+//在这个例子中，只要 i 小于 10，循环就会重复执行。i 从 0 开始，每次循环递增 2。
+```
+
+### 3.6.3 while 语句
+
+while 语句是一种先测试循环语句，即先检测退出条件，再执行循环体内的代码。因此，while 循 环体内的代码有可能不会执行。语法:
+
+```js
+while(expression) statement
+let i = 0;
+    while (i < 10) {
+i += 2; }
+//在这个例子中，变量 i 从 0 开始，每次循环递增 2。只要 i 小于 10，循环就会继续。
+```
+
+### 3.6.4 **for**语句
+
+for 语句也是先测试语句，只不过增加了进入循环之前的初始化代码，以及循环执行后要执行的表 达式，语法如下:
+
+with
+with语句的用途是将代码作用域设置为特定的对象
+
+```js 
+let qs = location.search.substring(1);
+let hostName = location.hostname;
+let url = location.href;
+
+// 使用with语句，将当前的作用域设置为location
+with(location) {
+    let qs = search.substring(1);
+    let hostName = hostname;
+    let url = href;
+}
+```
 
 
 
